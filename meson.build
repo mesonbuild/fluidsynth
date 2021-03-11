@@ -19,7 +19,9 @@ if host_machine.system() == 'darwin'
   conf.set('DARWIN', 1)
 endif
 
-conf.set('DEFAULT_SOUNDFONT', '"/usr/local/share/soundfonts/default.sf2"')
+conf.set('DEFAULT_SOUNDFONT', '/usr/share/soundfonts/default.sf2')
+
+conf.set('TEST_SOUNDFONT', meson.current_source_dir() + '/sf2/VintageDreamsWaves-v2.sf2')
 
 conf.set10('STDC_HEADERS', true)
 
@@ -74,7 +76,7 @@ summary('OpenMP 4.0', openmp_dep.found() ? 'yes' : 'no',
 
 configure_file(input : 'src/config.cmake',
                output : 'config.h',
-               format : 'cmake',
+               format : 'cmake@',
                configuration : conf)
 
 
@@ -84,12 +86,16 @@ subdir('include')
 subdir('include/fluidsynth')
 subdir('src')
 
-lib_includes = include_directories('.', 'include')
+lib_includes = [include_directories('.', 'include'), src_includes]
 dep_includes = include_directories('include')
 
 fluidsynth_lib = library('fluidsynth', fluidsynth_sources, tables,
                          dependencies : [m_dep, glib_dep, gthread_dep, openmp_dep],
-                         include_directories : [lib_includes, src_includes])
+                         include_directories : lib_includes)
 
 fluidsynth_dep = declare_dependency(link_with : fluidsynth_lib,
                                     include_directories : dep_includes)
+
+# unit tests
+
+subdir('test')
