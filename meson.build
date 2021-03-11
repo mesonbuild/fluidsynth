@@ -58,8 +58,8 @@ endforeach
 # external dependencies
 
 m_dep       = cc.find_library('m', required : false)
-glib_dep    = dependency('glib-2.0')
-gthread_dep = dependency('gthread-2.0')
+glib_dep    = dependency('glib-2.0', static : true)
+gthread_dep = dependency('gthread-2.0', static : true)
 openmp_dep  = dependency('openmp', required : false, language : 'c',
                          version : '>= 4.0')
 
