@@ -28,7 +28,8 @@ conf.set10('STDC_HEADERS', true)
 if get_option('enable-floats')
   conf.set('WITH_FLOAT', 1)
 endif
-summary('Samples type', conf.has('WITH_FLOAT') ? 'float' : 'double',
+summary('Samples type',
+        conf.has('WITH_FLOAT').to_string('float', 'double'),
         section : 'Developer nerds info')
 
 headers_to_check = [
@@ -68,7 +69,8 @@ openmp_dep  = dependency('openmp', required : false, language : 'c',
 if openmp_dep.found()
   conf.set('HAVE_OPENMP', 1)
 endif
-summary('OpenMP 4.0', openmp_dep.found() ? 'yes' : 'no',
+summary('OpenMP 4.0',
+        openmp_dep.found().to_string('yes', 'no'),
         section : 'Developer nerds info')
 
 
