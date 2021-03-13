@@ -6,7 +6,9 @@ project('fluidsynth', 'c',
 
 cc = meson.get_compiler('c')
 
-summary('Build type', get_option('buildtype'), section : 'Build Summary')
+summary('Build type',     get_option('buildtype'), section : 'Build Summary')
+summary('Install prefix', get_option('prefix'),    section : 'Build Summary')
+
 
 # config file
 #
@@ -15,21 +17,25 @@ summary('Build type', get_option('buildtype'), section : 'Build Summary')
 
 conf = configuration_data()
 
+conf.set('PACKAGE', meson.project_name())
+conf.set('DEFAULT_SOUNDFONT', get_option('datadir') / 'soundfonts' / 'default.sf2')
+conf.set('TEST_SOUNDFONT', meson.current_source_dir() / 'sf2' / 'VintageDreamsWaves-v2.sf2')
+conf.set('TEST_SOUNDFONT_SF3', meson.current_source_dir() / 'sf2' / 'VintageDreamsWaves-v2.sf3')
+conf.set('STDC_HEADERS', 1)
+conf.set('SUPPORTS_VLA', 1) # some check for ancient compilers
+
 if host_machine.system() == 'darwin'
   conf.set('DARWIN', 1)
 endif
 
-conf.set('DEFAULT_SOUNDFONT', '/usr/share/soundfonts/default.sf2')
-
-conf.set('TEST_SOUNDFONT', meson.current_source_dir() + '/sf2/VintageDreamsWaves-v2.sf2')
-
-conf.set10('STDC_HEADERS', true)
+if host_machine.endian() == 'big'
+  conf_data.set('WORDS_BIGENDIAN', 1)
+endif
 
 if get_option('enable-floats')
   conf.set('WITH_FLOAT', 1)
 endif
-summary('Samples type',
-        conf.has('WITH_FLOAT').to_string('float', 'double'),
+summary('Samples type', conf.has('WITH_FLOAT').to_string('float', 'double'),
         section : 'Developer nerds info')
 
 headers_to_check = [
@@ -61,16 +67,15 @@ endforeach
 # external dependencies
 
 m_dep       = cc.find_library('m', required : false)
-glib_dep    = dependency('glib-2.0', static : true)
-gthread_dep = dependency('gthread-2.0', static : true)
+glib_dep    = dependency('glib-2.0', static : get_option('try-static-deps'))
+gthread_dep = dependency('gthread-2.0', static : get_option('try-static-deps'))
 openmp_dep  = dependency('openmp', required : false, language : 'c',
                          version : '>= 4.0')
 
 if openmp_dep.found()
   conf.set('HAVE_OPENMP', 1)
 endif
-summary('OpenMP 4.0',
-        openmp_dep.found().to_string('yes', 'no'),
+summary('OpenMP 4.0', openmp_dep.found().to_string('yes', 'no'),
         section : 'Developer nerds info')
 
 

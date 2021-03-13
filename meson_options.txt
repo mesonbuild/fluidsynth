@@ -1,8 +1,6 @@
 # Options disabled by default
 
-option('enable-floats',
-       type : 'boolean',
-       value : false,
+option('enable-floats', type : 'boolean', value : false,
        description : 'enable type float instead of double for DSP samples')
 
 # TODO enable-fpe-check   'enable Floating Point Exception checks and debug messages'
@@ -50,3 +48,8 @@ option('enable-floats',
 #
 # OS2
 # TODO enable-dart 'compile DART support (if it is available)'
+
+# Wrap-specific options
+
+option('try-static-deps', type : 'boolean', value : false,
+       description : 'try using static linking for FluidSynth dependencies')
