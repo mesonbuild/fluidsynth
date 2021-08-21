@@ -1,0 +1,7 @@
+[wrap-file]
+directory = fluidsynth-2.2.2
+source_url = https://github.com/FluidSynth/fluidsynth/archive/v2.2.2.tar.gz
+source_filename = fluidsynth-2.2.2.tar.gz
+source_hash =  695aedbfd53160fef7a9a1f66cd6d5cc8a5da0fd472eee458d82b848b6065f9a
+[provide]
+fluidsynth = fluidsynth_dep
